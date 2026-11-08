@@ -1,63 +1,43 @@
 # N2 Sindri
 
-A local AST-based code quality scanner for Rust, TypeScript/TSX, JavaScript/JSX, Python, Go and Java. Includes a Rust library and a JSON command-line interface.
+**Read source files and find syntax errors and defined code-quality problems.**
 
-[한국어 안내](README.ko.md)
+[![release: 1.0.0](https://img.shields.io/badge/release-1.0.0-2563eb)](https://github.com/choihyunsus/n2-sindri/releases/tag/v1.0.0) [![runtime: Rust 1.98+](https://img.shields.io/badge/runtime-Rust%201.98%2B-334155)](https://github.com/choihyunsus/n2-sindri/blob/main/docs/reference.md) [![license: terms](https://img.shields.io/badge/license-terms-64748b)](https://github.com/choihyunsus/n2-sindri/blob/main/LICENSE)
 
-## Install
+[한국어](README.ko.md)
 
-Requires Rust 1.98 or later and a native C toolchain for the bundled Tree-sitter grammars. On Windows, install Visual Studio C++ Build Tools.
+![Select source files → Check the code → Find what to fix](https://github.com/choihyunsus/n2-sindri/raw/refs/heads/main/docs/images/overview.svg)
+
+## When to use it
+
+After an AI edits code, check for broken syntax or oversized functions and use the report as a completion requirement.
+
+Installation needs Rust and C/C++ build tools. Check runtime behavior with your project tests as well.
+
+## Try it
+
+Install Rust 1.98 or later and C/C++ build tools. On Windows, use Visual Studio C++ Build Tools. Then run this in a terminal.
 
 ```sh
 cargo install --git https://github.com/choihyunsus/n2-sindri --tag v1.0.0 --locked
 ```
 
-## Scan
+Run this inside a project that has source files.
 
 ```sh
 n2-sindri --dir ./src
-n2-sindri --files "src/main.rs,src/lib.rs"
-n2-sindri --files "src/**/*.ts"
 ```
 
-The CLI writes a JSON `ScanResult` to stdout. Exit status 0 means the configured gate passed, 1 means the scan failed the gate, and 2 means invalid CLI usage or an output serialization error. Quote globs so the scanner receives the pattern. Commas separate file selections.
+`passed` gives the gate result, `blockers` lists required fixes, and `warnings` lists items to review. Inspect the file and line shown, edit, then scan again. A scan with no supported files fails.
 
-```rust
-let result = n2_sindri::scan_dir("src");
-println!("{}", result.report);
-```
+## Using it with Soul
 
-Public functions are `scan_dir`, `scan_files`, and `supports_path`. The report preserves Daebung's field names `passed`, `blockers`, `warnings`, `info`, `scanned_files`, and `report`. Rust callers also receive `scanned_paths`; this field is omitted from serialized reports.
+This module works without its own database. To remember its results, have your app save them through Soul’s `n2_kv_save` tool.
 
-## Checks and limits
+## Next steps and reference
 
-The scanner reports syntax errors, selected dangerous constructs, excessive file/function length, repeated numeric literals and source hygiene findings. Read the rule identifiers in the report when configuring your quality gate. Lint suppressions use `sindri:ignore` above a node or `sindri:ignore-file` in the first five lines. Syntax and read failures remain blocking.
+The [full reference](https://github.com/choihyunsus/n2-sindri/blob/main/docs/reference.md) covers app integration, APIs, supported features, recovery and validation. The [release page](https://github.com/choihyunsus/n2-sindri/releases/tag/v1.0.0) contains the installable version and release notes.
 
-Each scan processes up to 5,000 candidate files and accepts files up to 2 MiB. Directory scanning skips symlink entries and dependency/build directories. Empty scans, unreadable files and malformed syntax fail the gate. Unknown file extensions are skipped.
+A few terms used in the reference: **MCP** connects tools to an AI app, a **database** stores records, and the **host** is the app that connects and runs this module.
 
-This CLI reads paths selected by its caller. An application exposing it as an agent tool must apply that application's workspace and permission policy before invocation. Functional correctness, runtime behavior and dependency vulnerabilities require their own tests.
-
-## Soul integration
-
-Scanning is stateless and requires no database. A host can save its outcome through Soul 9.2's `n2_kv_save` MCP tool using the existing fields below. Populate the summary from the actual report, use the caller's agent/project scope and check Soul's save response.
-
-```json
-{
-  "agent": "example-agent",
-  "project": "example-project",
-  "summary": "Sindri completed a source scan. Attach the actual pass/fail outcome and findings here.",
-  "decisions": [],
-  "todo": []
-}
-```
-
-## Development
-
-```sh
-cargo test --locked
-cargo package --locked
-```
-
-Tests cover AST rules, syntax errors, TSX parsing, missing files, invalid encoding, scan exclusions and CLI exit statuses. The source was extracted from N2 Daebung with the local tool-registry adapter separated from the standalone scanner.
-
-MIT license. Copyright 2026 N2 AI Family. Dependencies retain their respective licenses.
+Review the [license](https://github.com/choihyunsus/n2-sindri/blob/main/LICENSE) for use and redistribution. Dependencies can have their own terms, including commercial-use conditions described in the reference.

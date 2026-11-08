@@ -1,32 +1,43 @@
 # N2 Sindri
 
-Rust·TypeScript/TSX·JavaScript/JSX·Python·Go·Java 소스의 AST 기반 품질 검사기입니다. Rust 라이브러리와 JSON CLI를 제공합니다.
+**소스 코드를 읽고 문법 오류와 정해 둔 코드 품질 문제를 찾아줍니다.**
 
-## 설치
+[![release: 1.0.0](https://img.shields.io/badge/release-1.0.0-2563eb)](https://github.com/choihyunsus/n2-sindri/releases/tag/v1.0.0) [![runtime: Rust 1.98+](https://img.shields.io/badge/runtime-Rust%201.98%2B-334155)](https://github.com/choihyunsus/n2-sindri/blob/main/docs/reference.ko.md) [![license: terms](https://img.shields.io/badge/license-terms-64748b)](https://github.com/choihyunsus/n2-sindri/blob/main/LICENSE)
 
-Rust 1.98 이상과 C 빌드 도구가 필요합니다. Windows에서는 Visual Studio C++ Build Tools를 설치하세요.
+[English](README.md)
+
+![소스 폴더 선택 → 코드 검사 → 고칠 위치 확인](https://github.com/choihyunsus/n2-sindri/raw/refs/heads/main/docs/images/overview.ko.svg)
+
+## 이런 때 사용하세요
+
+AI가 코드를 고친 뒤 빠진 문법이나 지나치게 긴 함수를 확인하고, 검사 결과를 작업 완료 조건으로 사용할 수 있어요.
+
+Rust와 C/C++ 빌드 도구가 필요합니다. 프로그램을 실행했을 때의 동작은 프로젝트 테스트로 함께 확인하세요.
+
+## 처음 실행하기
+
+Rust 1.98 이상과 C/C++ 빌드 도구를 준비하세요. Windows에서는 Visual Studio C++ Build Tools가 필요합니다. 터미널에서 다음 명령으로 설치합니다.
 
 ```sh
 cargo install --git https://github.com/choihyunsus/n2-sindri --tag v1.0.0 --locked
 ```
 
-## 실행
+검사할 소스 파일이 있는 프로젝트에서 실행하세요.
 
 ```sh
 n2-sindri --dir ./src
-n2-sindri --files "src/main.rs,src/lib.rs"
 ```
 
-결과는 JSON으로 출력합니다. 종료 코드 0은 품질 게이트 통과, 1은 검사 실패, 2는 잘못된 실행 인자 또는 출력 직렬화 오류입니다. 결과의 `passed`, `blockers`, `warnings`, `info`, `scanned_files`, `report` 필드는 대붕이 원본과 같습니다.
+`passed`는 검사 통과 여부, `blockers`는 먼저 고쳐야 할 항목, `warnings`는 검토할 항목입니다. 결과에 표시된 파일과 줄을 확인하고 수정 후 다시 검사하세요. 검사할 파일이 없으면 실패로 표시됩니다.
 
-문법 오류, 일부 위험 구문, 파일·함수 길이와 반복 숫자 등을 검사합니다. 기능의 실제 작동 여부는 실행 테스트로 확인해야 합니다. 최대 5,000개 파일과 파일당 2 MiB를 처리합니다. 디렉터리 탐색에서는 심볼릭 링크와 의존성·빌드 폴더를 건너뜁니다. 검사할 소스가 없거나 파일을 읽을 수 없으면 실패합니다.
+## Soul과 함께 쓰기
 
-CLI는 사용자가 지정한 경로를 읽습니다. AI 도구로 연결하는 호스트는 자신의 작업공간과 권한 정책을 적용해야 합니다.
+이 모듈은 자체 DB 없이 사용할 수 있습니다. 결과를 기억하려면 연결한 앱에서 Soul의 `n2_kv_save`를 호출해 저장하세요.
 
-## Soul 연동
+## 다음 단계와 상세 안내
 
-검사 자체는 DB 없이 실행합니다. 결과 저장은 호스트에서 Soul 9.2의 `n2_kv_save` 도구를 호출해 처리합니다. `agent`, `project`, `summary`, `decisions`, `todo` 필드를 사용하며 실제 검사 결과를 요약에 넣고 저장 응답을 확인하세요. 영문 README에 호출 인자 예제가 있습니다.
+[전체 사용 안내](https://github.com/choihyunsus/n2-sindri/blob/main/docs/reference.ko.md)에서 실제 앱 연결, API, 지원 범위, 복구 절차와 검증 범위를 확인할 수 있습니다. [배포 파일](https://github.com/choihyunsus/n2-sindri/releases/tag/v1.0.0)에는 설치할 버전과 변경 설명이 있습니다.
 
-## 개발 검증
+처음 나오는 용어는 이렇게 읽으면 됩니다. **MCP**는 AI 앱의 도구 연결 방식, **DB**는 저장 파일, **호스트**는 이 모듈을 연결해 실행하는 앱입니다.
 
-`cargo test --locked`와 `cargo package --locked`로 테스트와 배포본 빌드를 확인합니다. MIT 라이선스와 원본 저작권 고지를 포함합니다.
+사용·재배포 조건은 [라이선스](https://github.com/choihyunsus/n2-sindri/blob/main/LICENSE)를 확인하세요. 의존 모듈에는 별도 조건이 적용될 수 있으며, 상업 이용 조건은 상세 안내에 함께 설명되어 있습니다.
