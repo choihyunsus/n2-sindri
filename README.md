@@ -6,7 +6,20 @@
 
 [한국어](README.ko.md)
 
+<p align="center">
+  <img src="https://github.com/choihyunsus/n2-sindri/raw/refs/heads/main/docs/images/comic.png" alt="Read source files and find syntax errors and defined code-quality problems." width="640">
+</p>
+
+Read source files and find syntax errors and defined code-quality problems.
+
+A story illustrating the feature, rather than a screenshot of the app.
+
+<details>
+<summary>View the workflow</summary>
+
 ![Select source files → Check the code → Find what to fix](https://github.com/choihyunsus/n2-sindri/raw/refs/heads/main/docs/images/overview.svg)
+
+</details>
 
 ## When to use it
 

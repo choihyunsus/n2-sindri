@@ -6,7 +6,20 @@
 
 [English](README.md)
 
+<p align="center">
+  <img src="https://github.com/choihyunsus/n2-sindri/raw/refs/heads/main/docs/images/comic.png" alt="코드를 작성하고 → 신드리로 검사해 → 고칠 위치를 찾고 → 수정 뒤 실제 테스트를 실행합니다." width="640">
+</p>
+
+코드를 작성하고 → 신드리로 검사해 → 고칠 위치를 찾고 → 수정 뒤 실제 테스트를 실행합니다.
+
+기능을 이야기로 표현한 만화입니다. 실제 앱 화면은 아닙니다.
+
+<details>
+<summary>동작 흐름 펼쳐 보기</summary>
+
 ![소스 폴더 선택 → 코드 검사 → 고칠 위치 확인](https://github.com/choihyunsus/n2-sindri/raw/refs/heads/main/docs/images/overview.ko.svg)
+
+</details>
 
 ## 이런 때 사용하세요
 
